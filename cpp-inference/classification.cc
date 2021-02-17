@@ -23,16 +23,60 @@ using namespace std;
     exit(1);                                                 \
   }
 
+
+
+void average_time(std::unique_ptr<tflite::Interpreter> &interpreter,int samples)
+{
+  std::vector<float> times;
+  chrono::steady_clock::time_point Tbegin, Tend;
+  for (int i=0;i<samples;++i)
+  {
+  Tbegin = chrono::steady_clock::now();
+  interpreter->Invoke();
+  Tend = chrono::steady_clock::now();
+  int f;
+  f = chrono::duration_cast <chrono::milliseconds> (Tend - Tbegin).count();
+  //cout<<"The processing time is: "<<f <<"ms"<<endl;
+  times.push_back(f);
+  }
+  cout<<"The average processing time is: "<<std::accumulate(times.begin(),times.end(),0)/times.size()<<"ms"<<std::endl;
+
+}
+
+void read_labels(string f_path,vector<string> &label)
+{
+
+  std::cout<<"Reading Labels"<<std::endl;
+  ifstream infile(f_path);
+  if (!infile.is_open())
+  {
+    cerr<<"<Cannot Open Label"<<endl;
+    exit(-1);
+  }
+  std::string line;
+  while (std::getline(infile, line))
+  {
+    //cout<<line<<endl;
+    label.push_back(line);
+  }
+
+}
+
 int main(int argc, char* argv[]) {
-  if (argc != 2) {
-    fprintf(stderr, "classification <tflite model>\n");
+  if (argc != 4) {
+    fprintf(stderr, "Usage: classification <tflite model> <labelfile> <imagename>\n");
     return 1;
   }
   const char* filename = argv[1];
+  const char* labelfile = argv[2];
+  const char* imagepath = argv[3];
+
   int model_height,model_width,model_channels;
   // Load model
   std::unique_ptr<tflite::FlatBufferModel> model =tflite::FlatBufferModel::BuildFromFile(filename);
   TFLITE_MINIMAL_CHECK(model != nullptr);
+  vector<string> label_list;
+  read_labels(labelfile,label_list);
 
   // Build the interpreter with the InterpreterBuilder.
   // Note: all Interpreters should be built with the InterpreterBuilder,
@@ -67,20 +111,20 @@ int main(int argc, char* argv[]) {
 
     // Get input dimension from the input tensor metadata
     // Assuming one input only
-    int In;
-    In = interpreter->inputs()[0];
-    model_height   = interpreter->tensor(In)->dims->data[1];
-    model_width    = interpreter->tensor(In)->dims->data[2];
-    model_channels = interpreter->tensor(In)->dims->data[3];
+  int In;
+  In = interpreter->inputs()[0];
+  model_height   = interpreter->tensor(In)->dims->data[1];
+  model_width    = interpreter->tensor(In)->dims->data[2];
+  model_channels = interpreter->tensor(In)->dims->data[3];
 
-    cout << "height   : "<< model_height << endl;
-    cout << "width    : "<< model_width << endl;
-    cout << "channels : "<< model_channels << endl;
+  cout << "height   : "<< model_height << endl;
+  cout << "width    : "<< model_width << endl;
+  cout << "channels : "<< model_channels << endl;
 
-    chrono::steady_clock::time_point Tbegin, Tend;
-    cv::Mat img;
     
-    img=imread("/home/asad/projs/cpp-inference/test.jpg");  //need to refresh frame before dnn class detection
+  cv::Mat img;
+
+  img=imread(imagepath);  //need to refresh frame before dnn class detection
     
     if (img.empty()) {
         cerr << "Can not load picture!" << endl;
@@ -89,32 +133,20 @@ int main(int argc, char* argv[]) {
     
     // copy image to input as input tensor
     // Preprocess the input image to feed to the model
+    cv:cvtColor(img,img,cv::COLOR_RGB2BGR);
     cv::resize(img, img, Size(model_width,model_height),INTER_CUBIC);
-    img.convertTo(img, CV_32FC);
+    img.convertTo(img, CV_32F);
     img/=255.0;
     memcpy(interpreter->typed_input_tensor<_Float32>(0), img.data, img.total() * img.elemSize());
-    cout << "tensors size: " << interpreter->tensors_size() << "\n";
-    cout << "nodes size: " << interpreter->nodes_size() << "\n";
     cout << "inputs: " << interpreter->inputs().size() << "\n";
     cout << "outputs: " << interpreter->outputs().size() << "\n";
-    int f;
-    std::vector<float> times;
-    for (int i=0;i<1000;++i)
-    {
-    Tbegin = chrono::steady_clock::now();
+    // Benchmark the timings of forward pass of model for n number of iterations
+    average_time(interpreter,500);
 
     interpreter->Invoke();      // run your model
 
-    Tend = chrono::steady_clock::now();
-    f = chrono::duration_cast <chrono::milliseconds> (Tend - Tbegin).count();
-    times.push_back(f);
-    }
 
-    cout<<"The average processing time is: "<<std::accumulate(times.begin(),times.end(),0)/times.size()<<"ms"<<std::endl;
-
-    cout << "Process time: " << f << " mSec" << endl;
-
-      const float threshold = 0.001f;
+    const float threshold = 0.001f;
 
     std::vector<std::pair<float, int>> top_results;
 
@@ -152,7 +184,7 @@ int main(int argc, char* argv[]) {
     for (const auto& result : top_results) {
         const float confidence = result.first;
         const int index = result.second;
-        cout << confidence << " : " << index << "\n";
+        cout<<"The image is: "<< label_list[index]<<" with score: "<<confidence<<endl;
     }
 
 

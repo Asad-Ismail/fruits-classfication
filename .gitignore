@@ -6,3 +6,4 @@ Fruit-Images-Dataset/
 *.tflite
 opencv-master/
 build/
+.vscode/

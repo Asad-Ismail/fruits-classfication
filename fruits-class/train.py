@@ -14,8 +14,8 @@ import cv2
 import time
 
 parser = argparse.ArgumentParser(description='Processing Input Arguments')
-parser.add_argument("--train_dir",type=str,default="/home/asad/projs/Fruit-Images-Dataset/Training")
-parser.add_argument("--test_dir",type=str,default="/home/asad/projs/Fruit-Images-Dataset/Test")
+parser.add_argument("--train_dir",type=str,default="/home/asad/projs/fruits_classification/Fruit-Images-Dataset/Training")
+parser.add_argument("--test_dir",type=str,default="/home/asad/projs/fruits_classification/Fruit-Images-Dataset/Test")
 args=parser.parse_args()
 b_sz=150
 epochs=30
@@ -60,7 +60,7 @@ def post_quantization(model):
     tflite_model_quant_file = tflite_models_dir/"inception_model_quant.tflite"
     tflite_model_quant_file.write_bytes(tflite_quant_model)
 
-filepath="/home/asad/projs/fruits-class/weights_best.hdf5"
+filepath="/home/asad/projs/fruits_classification/fruits-class/weights_best.hdf5"
 metric = 'val_accuracy'
 checkpoint= ModelCheckpoint(filepath, monitor=metric, verbose=1,save_best_only=True, mode='max')
 tensorboard_callback = K.callbacks.TensorBoard(log_dir=logdir)
@@ -103,7 +103,7 @@ def train(model):
     
 
 def predict_one(model):
-    img = K.preprocessing.image.load_img("/home/asad/projs/cpp-inference/test.jpg", target_size=image_size)
+    img = K.preprocessing.image.load_img("/home/asad/projs/fruits_classification/cpp-inference/test.jpg", target_size=image_size)
     img_array = K.preprocessing.image.img_to_array(img)/255.0
     img_array = tf.expand_dims(img_array, 0)
     predictions = model.predict(img_array)
@@ -194,6 +194,11 @@ def main():
     #q_acc=evaluate_lite_model("/home/asad/projs/fruits-class/tf-lite/inception_model_quant.tflite",test_data)
     labels = (test_data.class_indices)
     labels = dict((v,k) for k,v in labels.items())
+    #with open("labels.txt","w") as f:
+    #    for k,v in labels.items():
+    #        f.writelines(v+"\n")
+
+
     pred_one_lite("/home/asad/projs/fruits-class/tf-lite/inception_model_quant.tflite","/home/asad/projs/cpp-inference/test.jpg")
     cls_pred,score=predict_one(model)
     #print(f"The model predicted the label {labels[cls_pred]} with probability {score}")
