@@ -7,3 +7,5 @@ Fruit-Images-Dataset/
 opencv-master/
 build/
 .vscode/
+logs/
+__pycache__/
