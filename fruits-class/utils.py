@@ -5,7 +5,8 @@ import numpy as np
 import pathlib
 import tensorflow as tf
 import tensorflow.keras as K
-
+import time
+import cv2
 
 def show_images(ds):
     plt.figure(figsize=(10, 10))
@@ -30,6 +31,7 @@ def get_all_files(root_path):
 
 
 def predict_one(model,input_path,image_size=(100,100)):
+
     img = K.preprocessing.image.load_img(input_path, target_size=image_size)
     img_array = K.preprocessing.image.img_to_array(img)/255.0
     img_array = tf.expand_dims(img_array, 0)
@@ -50,6 +52,24 @@ def lite_average_time(interpreter,steps=500):
 
 
 def pred_one_lite(interpreter_path,img_pth):
+  interpreter = tf.lite.Interpreter(model_path=str(interpreter_path))
+  input_index = interpreter.get_input_details()[0]["index"]
+  output_index = interpreter.get_output_details()[0]["index"]
+  output_shape = interpreter.get_output_details()[0]["shape"]
+  interpreter.allocate_tensors()
+  tst_img=cv2.imread(img_pth)
+  tst_img=tst_img[:,:,[2,1,0]]
+  tst_img=np.expand_dims(tst_img,0)
+  tst_img=tst_img.astype(np.float32)
+  tst_img/=255.0
+  interpreter.set_tensor(input_index, tst_img)
+  interpreter.invoke()
+  output = interpreter.tensor(output_index)
+  digit = np.argmax(output(),axis=1)
+  print(digit)
+
+
+def time_lite(interpreter_path,img_pth):
   interpreter = tf.lite.Interpreter(model_path=str(interpreter_path))
   input_index = interpreter.get_input_details()[0]["index"]
   output_index = interpreter.get_output_details()[0]["index"]

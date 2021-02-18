@@ -7,7 +7,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 import os
 import numpy as np
 import time
-from utils import predict_one
+from utils import predict_one,pred_one_lite
 from Model import Model
 
 
@@ -21,5 +21,6 @@ if __name__=="__main__":
         labels=[name.strip() for name in f.readlines()]
     model=Model()
     model.load_weights(args.weights)
-    cls_pred,score=predict_one(model,args.input)
-    print(f"The model predicted the label {labels[cls_pred]} with probability {score}")
+    pred_one_lite("/home/asad/projs/fruits_classification/fruits-class/tf-lite-models/model_quant.tflite",args.input)
+    #cls_pred,score=predict_one(model,args.input)
+    #print(f"The model predicted the label {labels[cls_pred]} with probability {score}")

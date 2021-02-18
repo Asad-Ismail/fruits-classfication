@@ -15,6 +15,7 @@ import time
 from Model import Model
 from utils import show_images
 
+
 parser = argparse.ArgumentParser(description='Input Arguments')
 parser.add_argument("--train_dir",type=str,default="/home/asad/projs/fruits_classification/Fruit-Images-Dataset/Training")
 parser.add_argument("--test_dir",type=str,default="/home/asad/projs/fruits_classification/Fruit-Images-Dataset/Test")
@@ -22,7 +23,7 @@ parser.add_argument("--epochs",type=int,default=60)
 parser.add_argument("--batch_size",type=int,default=150)
 parser.add_argument("--img_size",type=int,default=100)
 parser.add_argument("--load_weights",type=bool,default=True)
-parser.add_argument("--out_path",type=str,default="./best_model.hdf5")
+parser.add_argument("--out_path",type=str,default="./")
 args=parser.parse_args()
 
 b_sz=args.batch_size
@@ -41,7 +42,7 @@ load_weights=args.load_weights
 
 def train(model,train_data,test_data):
     metric = 'val_accuracy'
-    checkpoint= ModelCheckpoint(args.out_path, monitor=metric, verbose=1,save_best_only=True, mode='max')
+    checkpoint= ModelCheckpoint(args.out_path+"weights_best.hdf5", monitor=metric, verbose=1,save_best_only=True, mode='max')
     tensorboard_callback = K.callbacks.TensorBoard(log_dir=logdir)
     callbacks_list = [checkpoint,tensorboard_callback]
     history = model.fit(train_data,epochs=epochs,validation_data=test_data,steps_per_epoch=steps_per_epochs,
@@ -69,26 +70,9 @@ def main():
     #show_images(train_data)
     test_datagen=ImageDataGenerator(rescale=1/255.0)
     test_data=test_datagen.flow_from_directory(args.test_dir,target_size=(100,100),batch_size=b_sz)
-    his=train(model,train_data,test_data)
-    #post_quantization(model)
-    #q_acc=evaluate_lite_model("/home/asad/projs/fruits-class/tf-lite/inception_model_quant.tflite",test_data)
-    #labels = (test_data.class_indices)
-    #labels = dict((v,k) for k,v in labels.items())
-    #with open("labels.txt","w") as f:
-    #    for k,v in labels.items():
-    #        f.writelines(v+"\n")
-
-
-    pred_one_lite("/home/asad/projs/fruits-class/tf-lite/inception_model_quant.tflite","/home/asad/projs/cpp-inference/test.jpg")
-    #cls_pred,score=predict_one(model)
-    #print(f"The model predicted the label {labels[cls_pred]} with probability {score}")
-    print(f"Test accuracy Quantized model: {q_acc}")
+    #his=train(model,train_data,test_data)
     score = model.evaluate(test_data, verbose=0)
-    #print("Test loss:", score[0])
     print("Test accuracy Non quantized model:", score[1])
-
-
-
 
 
 if __name__ =="__main__":

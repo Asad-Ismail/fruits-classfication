@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
   //printf("\n\n=== Post-invoke Interpreter State ===\n");
   //tflite::PrintInterpreterState(interpreter.get());
   interpreter->SetAllowFp16PrecisionForFp32(true);
-    //interpreter->SetNumThreads(4);      //quad core
+  interpreter->SetNumThreads(1);      //quad core
 
     // Get input dimension from the input tensor metadata
     // Assuming one input only
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
     cout << "inputs: " << interpreter->inputs().size() << "\n";
     cout << "outputs: " << interpreter->outputs().size() << "\n";
     // Benchmark the timings of forward pass of model for n number of iterations
-    average_time(interpreter,500);
+    average_time(interpreter,1000);
 
     interpreter->Invoke();      // run your model
 
