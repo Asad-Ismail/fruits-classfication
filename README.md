@@ -17,7 +17,7 @@ The repostiry contains tensorflow implementation of fruits 360 classification da
 2) To train the model python train.py --train_dir [path to train set] --test_dir [path to test set] --out_dir [path to output dir]
 
 ### Results
-After 30 epochs model achieves 99.7% accuracy on test set
+After 30 epochs model achieves 99.418% accuracy on test set
 
 ### Infer on image  
 To test on one image python pred_one.py --weights [path to weight file] --input [path to input image]
