@@ -17,7 +17,7 @@ The repostiry contains tensorflow implementation of fruits 360 classification da
 2) To train the model python train.py --train_dir [path to train set] --test_dir [path to test set] --out_dir [path to output dir]
 
 ### Results
-After 30 epochs model achieves 99.418% accuracy on test set
+After 30 epochs Inception V3 model achieves 99.418% accuracy on test set
 
 ### Infer on image  
 To test on one image python pred_one.py --weights [path to weight file] --input [path to input image]
@@ -25,3 +25,12 @@ To test on one image python pred_one.py --weights [path to weight file] --input 
 ## Conversion to tflite model
 To convert to tflite model python convert_to_tflite.py --weights_dir [path to .hdf5 file] --test_dir [path to test set]
 
+# Testing tf model@ x86 Intel G4550, GTX1080TI
+![size](https://user-images.githubusercontent.com/22799415/108342600-41c2e400-71db-11eb-8ec0-da3e874ab4f2.png)
+## Run time performance
+See cpp-inference for cpp inference files
+1) cpp inference (XNNPACK delegate for CPU)(1 thread)
+![inference](https://user-images.githubusercontent.com/22799415/108342624-4a1b1f00-71db-11eb-9529-69c81e353867.png)
+2) cpp inference (GPU delegate)(cpu 1 thread)
+![cpp](https://user-images.githubusercontent.com/22799415/108347796-4094b580-71e1-11eb-8ba9-76fa7ccfb5cd.png)
+For more detailed benchmarking see https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/tools/benchmark
