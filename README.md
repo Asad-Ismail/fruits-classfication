@@ -30,7 +30,9 @@ To convert to tflite model python convert_to_tflite.py --weights_dir [path to .h
 ## Run time performance
 See cpp-inference for cpp inference files
 1) cpp inference (XNNPACK delegate for CPU)(1 thread)
+
 ![inference](https://user-images.githubusercontent.com/22799415/108342624-4a1b1f00-71db-11eb-9529-69c81e353867.png)
 2) cpp inference (GPU delegate)(cpu 1 thread)
+
 ![cpp](https://user-images.githubusercontent.com/22799415/108347796-4094b580-71e1-11eb-8ba9-76fa7ccfb5cd.png)
 For more detailed benchmarking see https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/tools/benchmark
