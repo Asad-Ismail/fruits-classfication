@@ -23,3 +23,5 @@ After 30 epochs model achieves 99.7% accuracy on test set
 To test on one image python pred_one.py --weights [path to weight file] --input [path to input image]
 
 ## Conversion to tflite model
+To convert to tflite model python convert_to_tflite.py --weights_dir [path to .hdf5 file] --test_dir [path to test set]
+
