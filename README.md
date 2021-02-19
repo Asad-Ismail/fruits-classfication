@@ -3,6 +3,7 @@
 1. Train, Prediction and Evaluation scripts for classifcation model
 2. Conversion from tensorflow model to tensorflow lite
 3. cpp files to use tensorflow lite model with option of using CPU or GPU delegates (The script can be used in some embedded device for inference)
+4. Model training and deployment in AWS sagemaker for cloud training and deployment
 
 
 The repostiry contains tensorflow implementation of fruits 360 classification dataset which contains 131 coategories of fruits (https://github.com/Horea94/Fruit-Images-Dataset)
