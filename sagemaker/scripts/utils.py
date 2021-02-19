@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import os
 from datetime import datetime
 import numpy as np
@@ -6,7 +5,6 @@ import pathlib
 import tensorflow as tf
 import tensorflow.keras as K
 import time
-import cv2
 
 def show_images(ds):
     plt.figure(figsize=(10, 10))
