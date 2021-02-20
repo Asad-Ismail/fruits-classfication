@@ -1,4 +1,4 @@
-# Fruits-classfication tensorflow 2.x. 
+# Fruits-classfication training in local machine and sagemaker using tensorflow 2.x and deploymnet using cpp and sagemaker endpoint 
 # Features
 1. Train, Prediction and Evaluation scripts for classifcation model
 2. Conversion from tensorflow model to tensorflow lite
