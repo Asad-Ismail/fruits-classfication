@@ -1,4 +1,5 @@
-FROM nvidia/cuda:11.2.1-cudnn8-runtime-ubuntu20.04
+#FROM nvidia/cuda:11.2.1-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
@@ -24,15 +25,17 @@ RUN pip install tensorflow-gpu
 
 #COPY ./tensorflow-2.3.0-cp38-cp38-linux_x86_64.whl /opt/
 #RUN pip install /opt/tensorflow-2.3.0-cp38-cp38-linux_x86_64.whl 
-RUN pip install pillow gunicorn==19.9.0 gevent flask
+RUN pip install scipy pillow gunicorn==19.9.0 gevent flask
 
 ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE
 ENV PATH="/opt/program:${PATH}"
 
-
-
 COPY ./scripts /opt/program
+
+RUN chmod +x /opt/program/train
+RUN chmod +x /opt/program/serve
+
 WORKDIR /opt/program
 
 
