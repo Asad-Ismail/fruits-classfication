@@ -1,4 +1,6 @@
-# Fruits-classfication tensorflow 2.x. 
+# Fruits-classfication training and deployment (Tensorflow 2.x) 
+# Goal
+The purpose of this repo is to provoide complete pipeline from training to deployment in local machine as well as Amazon sagemaker and deployment of trained model in some embedded hardware like Rasberrypie using cpp and tflite as well as in cloud using amazon sagemaker.
 # Features
 1. Train, Prediction and Evaluation scripts for classifcation model
 2. Conversion from tensorflow model to tensorflow lite

@@ -14,7 +14,7 @@ def Model():
     x=K.layers.Dropout(0.2)(x)
     x=K.layers.Dense(units=512,activation="relu")(x)
     x=K.layers.Dropout(0.1)(x)
-    x=K.layers.Dense(units=2,activation="softmax")(x)
+    x=K.layers.Dense(units=131,activation="softmax")(x)
     model=K.Model(inputs=pre_trained_model.input,outputs=x)
     return model
     
